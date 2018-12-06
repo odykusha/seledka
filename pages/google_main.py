@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from ..elements.base import Page, Element
 
-class GooglePage(object):
 
-    def __init__(self, driver):
-        self.driver = driver
+class GooglePage(Page):
 
-    @property
-    def search_input(self):
-        return self.driver.find_element_by_name("q")
+    url = 'https://www.google.com.ua/'
 
-    @property
-    def result_list(self):
-        return self.driver.find_elements_by_class_name('g')
+    search_input = Element.find_by_name('q')
+    result_list = Element.find_by_class_name('g')
