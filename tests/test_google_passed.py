@@ -19,8 +19,6 @@ class PythonOrgSearch(TestsCore):
             12,
             "query return not 10 results"
         )
-        for i in google_page.result_list:
-            print(i.title.get_attribute('href'))
         google_page.logo.wait_to_disappear()
 
     def test_search_webdriver_passed(self):

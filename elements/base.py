@@ -154,42 +154,6 @@ class Base(Bindable):
     def as_list(cls, by, locator):
         return type(cls.__name__ + 'List', (cls, Sequence), {})(by, locator)
 
-    # # --- find --- #
-    # @classmethod
-    # def find_by_id(cls, value):
-    #     return Element.as_list(By.ID, value)
-    #
-    # @classmethod
-    # def find_by_xpath(cls, value):
-    #     return Element.as_list(By.XPATH, value)
-    #
-    # @classmethod
-    # def find_by_link_text(cls, value):
-    #     return Element.as_list(By.LINK_TEXT, value)
-    #
-    # @classmethod
-    # def find_by_partial_link_text(cls, value):
-    #     return Element.as_list(By.PARTIAL_LINK_TEXT, value)
-    #
-    # @classmethod
-    # def find_by_name(cls, value):
-    #     return Element.as_list(By.NAME, value)
-    #
-    # @classmethod
-    # def find_by_tag_name(cls, value):
-    #     return Element.as_list(By.TAG_NAME, value)
-    #
-    # @classmethod
-    # def find_by_class_name(cls, value):
-    #     return Element.as_list(By.CLASS_NAME, value)
-    #
-    # @classmethod
-    # def find_by_css_selector(cls, value):
-    #     return Element.as_list(By.CSS_SELECTOR, value)
-    # # --- find --- #
-
-
-
     def lookup(self):
         obj = self.parent if self.parent else self.driver
         WebDriverWait(self.driver, 15).until(
@@ -250,7 +214,6 @@ class Base(Bindable):
 
     def wait_to_display(self, timeout=5):
         """ Ожидание пока элемент не отобразится на странице """
-        print(self.driver)
         WebDriverWait(self.driver, timeout).until(
             lambda driver: self.is_displayed(),
             f"Элемент {self.by}={self.locator} найден в ДОМе, "
@@ -308,7 +271,37 @@ class Page(object):
 #                                   Block
 # --------------------------------------------------------------------------- #
 class Block(Base):
-    pass
+    @classmethod
+    def find_by_id(cls, value):
+        return Block(By.ID, value)
+
+    @classmethod
+    def find_by_xpath(cls, value):
+        return Block(By.XPATH, value)
+
+    @classmethod
+    def find_by_link_text(cls, value):
+        return Block(By.LINK_TEXT, value)
+
+    @classmethod
+    def find_by_partial_link_text(cls, value):
+        return Block(By.PARTIAL_LINK_TEXT, value)
+
+    @classmethod
+    def find_by_name(cls, value):
+        return Block(By.NAME, value)
+
+    @classmethod
+    def find_by_tag_name(cls, value):
+        return Block(By.TAG_NAME, value)
+
+    @classmethod
+    def find_by_class_name(cls, value):
+        return Base(By.CLASS_NAME, value)
+
+    @classmethod
+    def find_by_css_selector(cls, value):
+        return Base(By.CSS_SELECTOR, value)
 
 
 # --------------------------------------------------------------------------- #
@@ -316,9 +309,6 @@ class Block(Base):
 # --------------------------------------------------------------------------- #
 class Element(Base):
 
-    # def __init__(self, by, locator):
-    #     Base.__init__(self, by, locator)
-    #
     # def click(self, with_wait=True):
     #     """ Нажатие на элемент """
     #     if with_wait:
@@ -326,6 +316,38 @@ class Element(Base):
     #     self.lookup().click(self)
     #     # wait_for_page_loaded(self.driver)
     #     return self
+
+    @classmethod
+    def find_by_id(cls, value):
+        return Element(By.ID, value)
+
+    @classmethod
+    def find_by_xpath(cls, value):
+        return Element(By.XPATH, value)
+
+    @classmethod
+    def find_by_link_text(cls, value):
+        return Element(By.LINK_TEXT, value)
+
+    @classmethod
+    def find_by_partial_link_text(cls, value):
+        return Element(By.PARTIAL_LINK_TEXT, value)
+
+    @classmethod
+    def find_by_name(cls, value):
+        return Element(By.NAME, value)
+
+    @classmethod
+    def find_by_tag_name(cls, value):
+        return Element(By.TAG_NAME, value)
+
+    @classmethod
+    def find_by_class_name(cls, value):
+        return Element(By.CLASS_NAME, value)
+
+    @classmethod
+    def find_by_css_selector(cls, value):
+        return Element(By.CSS_SELECTOR, value)
 
     def clear(self):
         """ Ощищение текста в инпуте """
