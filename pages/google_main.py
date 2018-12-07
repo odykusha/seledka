@@ -1,11 +1,18 @@
-# -*- coding: utf-8 -*-
+from selenium.webdriver.common.by import By
 
-from ..elements.base import Page, Element
+from ..elements.base import Page, Block, Element
+
+
+class ResultBlocks(Block):
+    title = Element(By.CSS_SELECTOR, '.r a')
 
 
 class GooglePage(Page):
 
     url = 'https://www.google.com.ua/'
 
-    search_input = Element.find_by_name('q')
-    result_list = Element.find_by_class_name('g')
+    search_input = Element(By.NAME, 'q')
+    result_list = ResultBlocks.as_list(By.CLASS_NAME, 'g')
+    logo = Element(By.ID, 'body')
+
+    # t_title = Element.find_by_class_name('r')

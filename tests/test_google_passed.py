@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 from ..core import TestsCore
 
 from ..pages.google_main import GooglePage
@@ -17,14 +17,19 @@ class PythonOrgSearch(TestsCore):
         self.soft_assert_equal(
             len(google_page.result_list),
             12,
-            u"query return not 10 results"
+            "query return not 10 results"
         )
+        for i in google_page.result_list:
+            print(i.title.get_attribute('href'))
+        google_page.logo.wait_to_disappear()
 
     def test_search_webdriver_passed(self):
         google_page = GooglePage(self.driver)
         google_page.open()
         google_page.search_input.send_keys("webdriver").send_keyword()
+        google_page.result_list.wait_to_display()
         self.soft_assert_equal(
-            u"webdriver - Поиск в Google",
+            "webdriver - Поиск в Google",
             self.driver.title
         )
+        google_page.logo.wait_to_disappear()
