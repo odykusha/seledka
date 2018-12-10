@@ -5,13 +5,13 @@ from ..elements.base import Page, Block, Element
 
 
 class ResultBlocks(Block):
-    title = Element.find_by_css_selector('.r a')
+    title = Element(By.CSS_SELECTOR, '.r a')
 
 
 class GooglePage(Page):
 
     url = 'https://www.google.com.ua/'
 
-    search_input = Element.find_by_name('q')
+    search_input = Element(By.NAME, 'q')
     result_list = ResultBlocks.as_list(By.CLASS_NAME, 'g')
-    logo = Element.find_by_id('body')
+    logo = Element(By.ID, 'body')

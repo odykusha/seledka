@@ -271,37 +271,7 @@ class Page(object):
 #                                   Block
 # --------------------------------------------------------------------------- #
 class Block(Base):
-    @classmethod
-    def find_by_id(cls, value):
-        return Block(By.ID, value)
-
-    @classmethod
-    def find_by_xpath(cls, value):
-        return Block(By.XPATH, value)
-
-    @classmethod
-    def find_by_link_text(cls, value):
-        return Block(By.LINK_TEXT, value)
-
-    @classmethod
-    def find_by_partial_link_text(cls, value):
-        return Block(By.PARTIAL_LINK_TEXT, value)
-
-    @classmethod
-    def find_by_name(cls, value):
-        return Block(By.NAME, value)
-
-    @classmethod
-    def find_by_tag_name(cls, value):
-        return Block(By.TAG_NAME, value)
-
-    @classmethod
-    def find_by_class_name(cls, value):
-        return Base(By.CLASS_NAME, value)
-
-    @classmethod
-    def find_by_css_selector(cls, value):
-        return Base(By.CSS_SELECTOR, value)
+    pass
 
 
 # --------------------------------------------------------------------------- #
@@ -316,38 +286,6 @@ class Element(Base):
     #     self.lookup().click(self)
     #     # wait_for_page_loaded(self.driver)
     #     return self
-
-    @classmethod
-    def find_by_id(cls, value):
-        return Element(By.ID, value)
-
-    @classmethod
-    def find_by_xpath(cls, value):
-        return Element(By.XPATH, value)
-
-    @classmethod
-    def find_by_link_text(cls, value):
-        return Element(By.LINK_TEXT, value)
-
-    @classmethod
-    def find_by_partial_link_text(cls, value):
-        return Element(By.PARTIAL_LINK_TEXT, value)
-
-    @classmethod
-    def find_by_name(cls, value):
-        return Element(By.NAME, value)
-
-    @classmethod
-    def find_by_tag_name(cls, value):
-        return Element(By.TAG_NAME, value)
-
-    @classmethod
-    def find_by_class_name(cls, value):
-        return Element(By.CLASS_NAME, value)
-
-    @classmethod
-    def find_by_css_selector(cls, value):
-        return Element(By.CSS_SELECTOR, value)
 
     def clear(self):
         """ Ощищение текста в инпуте """
