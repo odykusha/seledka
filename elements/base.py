@@ -306,6 +306,8 @@ class Element(Base):
         ActionChains(self.driver).\
             key_down(Keys.BACKSPACE).\
             perform()
+        # self.send_keys(Keys.CONTROL + 'a')
+        # self.send_keys(Keys.BACKSPACE)
         return self
 
     def is_selected(self):
