@@ -237,6 +237,74 @@ class Base(Bindable):
         ActionChains(self.driver).move_to_element(self.lookup()).perform()
         return self
 
+    #                           find single elements
+    # _______________________________________________________________________ #
+    @classmethod
+    def find_by_id(cls, value):
+        return cls(By.ID, value)
+
+    @classmethod
+    def find_by_xpath(cls, value):
+        return cls(By.XPATH, value)
+
+    @classmethod
+    def find_by_link_text(cls, value):
+        return cls(By.LINK_TEXT, value)
+
+    @classmethod
+    def find_by_partial_link_text(cls, value):
+        return cls(By.PARTIAL_LINK_TEXT, value)
+
+    @classmethod
+    def find_by_name(cls, value):
+        return cls(By.NAME, value)
+
+    @classmethod
+    def find_by_tag_name(cls, value):
+        return cls(By.TAG_NAME, value)
+
+    @classmethod
+    def find_by_class_name(cls, value):
+        return cls(By.CLASS_NAME, value)
+
+    @classmethod
+    def find_by_css_selector(cls, value):
+        return cls(By.CSS_SELECTOR, value)
+
+    #                           find all elements
+    # _______________________________________________________________________ #
+    @classmethod
+    def find_all_by_id(cls, value):
+        return cls.as_list(By.ID, value)
+
+    @classmethod
+    def find_all_by_xpath(cls, value):
+        return cls.as_list(By.XPATH, value)
+
+    @classmethod
+    def find_all_by_link_text(cls, value):
+        return cls.as_list(By.LINK_TEXT, value)
+
+    @classmethod
+    def find_all_by_partial_link_text(cls, value):
+        return cls.as_list(By.PARTIAL_LINK_TEXT, value)
+
+    @classmethod
+    def find_all_by_name(cls, value):
+        return cls.as_list(By.NAME, value)
+
+    @classmethod
+    def find_all_by_tag_name(cls, value):
+        return cls.as_list(By.TAG_NAME, value)
+
+    @classmethod
+    def find_all_by_class_name(cls, value):
+        return cls.as_list(By.CLASS_NAME, value)
+
+    @classmethod
+    def find_all_by_css_selector(cls, value):
+        return cls.as_list(By.CSS_SELECTOR, value)
+
 
 # --------------------------------------------------------------------------- #
 #                                   PAGE

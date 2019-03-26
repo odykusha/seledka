@@ -15,7 +15,7 @@ class PythonOrgSearch(TestsCore):
         )
         google_page.search_input.send_keys("webdriver").send_keyword()
         self.soft_assert_equal(
-            len(google_page.result_list),
+            len(google_page.result_lists),
             12,
             "query return not 10 results"
         )
@@ -25,7 +25,7 @@ class PythonOrgSearch(TestsCore):
         google_page = GooglePage(self.driver)
         google_page.open()
         google_page.search_input.send_keys("webdriver").send_keyword()
-        google_page.result_list.wait_to_display()
+        google_page.result_lists.wait_to_display()
         self.soft_assert_equal(
             "webdriver - Поиск в Google",
             self.driver.title
