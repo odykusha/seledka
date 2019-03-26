@@ -18,8 +18,8 @@ class TestsCore(unittest.TestCase, SoftAssert):
         self.assert_errors = '\n'
 
         if platform.system() == 'Win32':
-            chromedriver = "E:\instal\_Programming\chromedriver.exe"
-            # os.environ["webdriver.chrome.driver"] = chromedriver
+            chromedriver = "E:\\instal\\Programming\\chromedriver.exe"
+            os.environ["webdriver.chrome.driver"] = chromedriver
             # self.driver = webdriver.Chrome(chromedriver)
         if platform.system() == 'Linux':
             chromedriver = "/usr/bin/chromedriver"

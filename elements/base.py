@@ -21,29 +21,29 @@ log = logging.getLogger(__name__)
 def enable_jquery(driver, timeout=15):
     # enable_jquery
     driver.execute_script("""
-            jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';
-            if (typeof jQuery == 'undefined') {
-                var script = document.createElement('script');
-                var head = document.getElementsByTagName('head')[0];
-                var done = false;
-                script.onload = script.onreadystatechange = (function() {
-                    if (!done && (!this.readyState || this.readyState == 'loaded'
-                            || this.readyState == 'complete')) {
-                        done = true;
-                        script.onload = script.onreadystatechange = null;
-                        head.removeChild(script);
+        jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';  #
+        if (typeof jQuery == 'undefined') {
+            var script = document.createElement('script');
+            var head = document.getElementsByTagName('head')[0];
+            var done = false;
+            script.onload = script.onreadystatechange = (function() {
+                if (!done && (!this.readyState || this.readyState == 'loaded'
+                        || this.readyState == 'complete')) {
+                    done = true;
+                    script.onload = script.onreadystatechange = null;
+                    head.removeChild(script);
 
-                    }
-                });
-                script.src = jqueryUrl;
-                head.appendChild(script);
-            };""")
+                }
+            });
+            script.src = jqueryUrl;
+            head.appendChild(script);
+        };""")
     # wait ajax
     WebDriverWait(driver, timeout).until(
         lambda driver: driver.execute_script(
             'return typeof jQuery != "undefined"'
         ),
-        'jQuery undefined (waiting time: %s sec)' % timeout
+        f'jQuery undefined (waiting time: {timeout} sec)'
     )
 
 
@@ -494,35 +494,6 @@ class Element(Base):
 # --------------------------------------------------------------------------- #
 #                                Page load waits
 # --------------------------------------------------------------------------- #
-def enable_jquery(driver, timeout=5):
-    # enable_jquery
-    driver.execute_script("""
-            jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';
-            if (typeof jQuery == 'undefined') {
-                var script = document.createElement('script');
-                var head = document.getElementsByTagName('head')[0];
-                var done = false;
-                script.onload = script.onreadystatechange = (function() {
-                    if (!done && (!this.readyState || this.readyState == 'loaded'
-                            || this.readyState == 'complete')) {
-                        done = true;
-                        script.onload = script.onreadystatechange = null;
-                        head.removeChild(script);
-
-                    }
-                });
-                script.src = jqueryUrl;
-                head.appendChild(script);
-            };""")
-    # wait ajax
-    WebDriverWait(driver, timeout).until(
-        lambda driver: driver.execute_script(
-            'return typeof jQuery != "undefined"'
-        ),
-        f'jQuery undefined (waiting time: {timeout} sec)'
-    )
-
-
 def wait_load_page(driver, timeout=10):
     # wait full page load
     WebDriverWait(driver, timeout).until(
@@ -548,6 +519,7 @@ def wait_for_page_loaded(driver):
     try:
         wait_load_page(driver)
     except UnexpectedAlertPresentException as e:
+        log.warning(e)
         alert_is_present = EC.alert_is_present()
         if alert_is_present(driver):
             driver.switch_to_alert().accept()
