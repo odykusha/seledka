@@ -1,0 +1,6 @@
+[flake8]
+exclude =
+    .cache,
+    .pytest_cache,
+    env,
+max-complexity = 10

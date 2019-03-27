@@ -15,18 +15,22 @@ log = logging.getLogger(__name__)
 class TestsCore(unittest.TestCase, SoftAssert):
 
     def setUp(self):
+
         self.assert_errors = '\n'
 
         if platform.system() == 'Win32':
             chromedriver = "E:\\instal\\Programming\\chromedriver.exe"
             os.environ["webdriver.chrome.driver"] = chromedriver
-            # self.driver = webdriver.Chrome(chromedriver)
+            self.driver = webdriver.Chrome(chromedriver)
+
         if platform.system() == 'Linux':
             chromedriver = "/usr/bin/chromedriver"
             os.environ["webdriver.chrome.driver"] = chromedriver
             self.driver = webdriver.Chrome(chromedriver)
+
         if platform.system() == 'Darwin':
             self.driver = webdriver.Chrome()
+
         self.driver.maximize_window()
 
     def tearDown(self):

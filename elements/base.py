@@ -1,6 +1,8 @@
+
 import time
 import logging
 import collections
+
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -21,7 +23,7 @@ log = logging.getLogger(__name__)
 def enable_jquery(driver, timeout=15):
     # enable_jquery
     driver.execute_script("""
-        jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';  #
+        jqueryUrl = 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js';
         if (typeof jQuery == 'undefined') {
             var script = document.createElement('script');
             var head = document.getElementsByTagName('head')[0];
@@ -55,9 +57,7 @@ def find_elements(driver, by, locator, cycles=20):
         if i < (cycles - 1):
             time.sleep(0.5)
     else:
-        raise ElementLocationException(
-            f'Элемент {by}={locator} не найден'
-        )
+        raise ElementLocationException(f'Элемент {by}={locator} не найден')
 
 
 def scroll_to_element(driver, element, with_offset=0, inside_element=None):
@@ -87,7 +87,7 @@ def scroll_if_invisible(driver, element):
     element_coordinate = driver.execute_script(script, element)
     if element_coordinate['bottom'] < 0:
         scroll_to_element(driver, element, with_offset=-60)
-        log.info('[SCROLL] coordinate: %s' % element_coordinate)
+        log.info(f'[SCROLL] coordinate: {element_coordinate}')
 
 
 # --------------------------------------------------------------------------- #
@@ -118,6 +118,7 @@ class Sequence(collections.Sequence):
 
 
 class Bindable(object):
+
     parent = None
     page_object = []
 
@@ -129,12 +130,6 @@ class Bindable(object):
         return c
 
     def __get__(self, instance, owner):
-        # if 'Page' in str(instance.__class__.__bases__):
-        #     if instance not in self.page_object:
-        #         self.page_object.append(instance)
-        #     else:
-        #         self.page_object.remove(instance)
-        #         self.page_object.append(instance)
         return self.bind(instance.lookup(), instance.driver)
 
 
@@ -188,7 +183,7 @@ class Base(Bindable):
         """ Проверка что элемент находится в ДОМе """
         obj = self.parent if self.parent else self.driver
         try:
-            _ = obj.find_elements(self.by, self.locator)[self.index]
+            _ = obj.find_elements(self.by, self.locator)[self.index]  # noqa
             return True
         except (NoSuchElementException, IndexError):
             return False
@@ -310,6 +305,7 @@ class Base(Bindable):
 #                                   PAGE
 # --------------------------------------------------------------------------- #
 class Page(object):
+
     def __init__(self, driver):
         self.driver = driver
 
@@ -499,19 +495,20 @@ def wait_load_page(driver, timeout=10):
     WebDriverWait(driver, timeout).until(
         lambda driver: driver.execute_script(
             "return document.readyState == 'complete'"),
-        'Page load timeout (waiting time: %s sec)' % timeout
+        f'Page load timeout (waiting time: {timeout} sec)'
     )
+    # enable_jquery(driver)
     if driver.execute_script('return !!window.jQuery == true;'):
         # wait ajax query
         WebDriverWait(driver, timeout).until(
             lambda driver: driver.execute_script('return jQuery.active == 0;'),
-            'Ajax timeout (waiting time: %s sec)' % timeout
+            f'Ajax timeout (waiting time: {timeout} sec)'
         )
         # wait animation
         WebDriverWait(driver, timeout).until(
             lambda driver: driver.execute_script(
-                'return jQuery(":animated").length == 0;'
-            ), 'Animation timeout (waiting time: %s sec)' % timeout
+                'return jQuery(":animated").length == 0;'),
+            f'Animation timeout (waiting time: {timeout} sec)'
         )
 
 

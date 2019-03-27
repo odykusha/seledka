@@ -4,18 +4,13 @@ import logging
 
 import allure
 
+
 log = logging.getLogger(__name__)
 
 
 # --------------------------------------------------------------------------- #
 #                              Logger Configure
 # --------------------------------------------------------------------------- #
-class LoggerFilter(logging.Filter):
-
-    def filter(self, record):
-        return record.levelno > 10
-
-
 class Logger(object):
 
     def pytest_runtest_setup(self, item):
@@ -26,12 +21,10 @@ class Logger(object):
             "%H:%M:%S"
         ))
         root_logger = logging.getLogger()
-
-        item.capturelog_handler.addFilter(LoggerFilter())
         root_logger.addHandler(item.capturelog_handler)
         root_logger.setLevel(logging.NOTSET)
 
-    def pytest_runtest_makereport(self, __multicall__, item, call):
+    def pytest_runtest_makereport(self, __multicall__, item, call):  # noqa
 
         report = __multicall__.execute()
 
@@ -45,7 +38,7 @@ class Logger(object):
                 if hasattr(longrepr, 'addsection'):
                     log_debug = log_info = ''
                     log_warning = log_error = ''
-                    log_critical = log_exception = ''
+                    log_critical = ''
                     # @@@ - разделитель логов
                     captured_log = item.capturelog_handler.stream.getvalue()
                     logs_list = captured_log.split('@@@')
@@ -61,8 +54,6 @@ class Logger(object):
                             log_error += lg.replace('<<ERROR>>', '')
                         elif '<<CRITICAL>>' in lg:
                             log_critical += lg.replace('<<CRITICAL>>', '')
-                        elif '<<EXCEPTION>>' in lg:
-                            log_exception += lg.replace('<<EXCEPTION>>', '')
 
                     with allure.step(u'[Логи]'):
                         if log_debug:
@@ -85,11 +76,6 @@ class Logger(object):
                             longrepr.addsection(
                                 'Логи [critical]', f"{log_critical}")
                             allure.attach(log_critical, name='Логи [CRITICAL]')
-                        if log_exception:
-                            longrepr.addsection(
-                                'Логи [exception]', f"{log_exception}")
-                            allure.attach(log_exception,
-                                          name='Логи [EXCEPTION]')
 
             if call.when == 'teardown':
                 item.capturelog_handler.close()

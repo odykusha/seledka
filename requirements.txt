@@ -38,7 +38,7 @@ selenium==3.14.0
 sqlsoup==0.9.1
 bs4==0.0.1
 fake-factory==0.5.3
-pytest==3.5.0
+pytest==3.6
 pytest-xdist==1.23.0
 pytest_rerunfailures==4.1
 pytest-instafail==0.3.0

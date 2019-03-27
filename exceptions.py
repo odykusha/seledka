@@ -9,8 +9,8 @@ class SoftAssert(object):
             self.assert_errors += (
                 f"*----------------- Soft Exception -------------------*\n"
                 f"Не совпадают значения \n"
-                f"\tтекущее: {current}\n"
-                f"\tожидаемое: {excepted}\n"
+                f"\tТекущее: {current}\n"
+                f"\tОжидаемое: {excepted}\n"
                 f"\tURL: {self.driver.current_url}\n"
-                f"\t{'message: ' + message if message else ''}\n\n"
+                f"\t{'Ошибка: ' + message if message else ''}\n\n"
             )

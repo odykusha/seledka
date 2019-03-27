@@ -1,14 +1,15 @@
-# -*- coding: utf-8 -*-
 
-import allure
 import time
 import logging
+
+import allure
 from requests.exceptions import ReadTimeout, ConnectionError
-from functools import wraps
 from sqlsoup import Session
 from sqlalchemy.exc import (
     OperationalError, IntegrityError, InvalidRequestError
 )
+
+from functools import wraps
 
 
 log = logging.getLogger(__name__)
@@ -30,41 +31,24 @@ def TryRequests(fnc):
                 return fnc(*args, **kwargs)
             except ConnectionError:
                 allure.attach(
-                    u'exception: {err}, '
-                    u'def {function}, try: {try_count}'.format(
-                        err=u'ConnectionError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    ),
+                    f'exception: ConnectionError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}',
                     name='[TryRequests]'
                 )
-
                 log.error(
-                    u'[TryRequests] exception: {err}, '
-                    u'def {function}, try: {try_count}'.format(
-                        err=u'ConnectionError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    )
+                    f'[TryRequests] exception: ConnectionError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}'
                 )
                 continue
             except ReadTimeout:
                 allure.attach(
-                    u'exception: {err}, '
-                    u'def {function}, try: {try_count}'.format(
-                        err=u'ReadTimeout',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    ),
+                    f'exception: ReadTimeout, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}',
                     name='[TryRequests]'
                 )
                 log.error(
-                    u'[TryRequests] exception: {err}, '
-                    u'def {function}, try: {try_count}'.format(
-                        err=u'ReadTimeout',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    )
+                    f'[TryRequests] exception: ReadTimeout, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}'
                 )
                 continue
         return fnc(*args, **kwargs)
@@ -84,67 +68,37 @@ def TryInsert(fnc):
                 return fnc(*args, **kwargs)
             except InvalidRequestError:
                 allure.attach(
-                    u'exception: {err}, '
-                    u'def {function}, try: {try_count}'
-                    u''.format(
-                        err=u'InvalidRequestError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    ),
+                    f'exception: InvalidRequestError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}',
                     name='[TryInsert]'
                 )
                 log.error(
-                    u'[TryInsert] exception: {err}, '
-                    u'def {function}, try: {try_count}'
-                    u''.format(
-                        err=u'InvalidRequestError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    )
+                    f'[TryInsert] exception: InvalidRequestError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}'
                 )
                 Session.rollback()
                 continue
             except IntegrityError:
                 allure.attach(
-                    u'exception: {err}, '
-                    u'def {function}, try: {try_count}'
-                    u''.format(
-                        err=u'IntegrityError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    ),
+                    f'exception: IntegrityError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}',
                     name='[TryInsert]'
                 )
                 log.error(
-                    u'[TryInsert] exception: {err}, '
-                    u'def {function}, try: {try_count}'
-                    u''.format(
-                        err=u'IntegrityError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    )
+                    f'[TryInsert] exception: IntegrityError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}'
                 )
                 Session.rollback()
                 continue
             except OperationalError:
                 allure.attach(
-                    u'exception: {err}, '
-                    u'def {function}, try: {try_count}'
-                    u''.format(
-                        err=u'OperationalError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    ),
+                    f'exception: OperationalError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}',
                     name='[TryInsert]'
                 )
                 log.error(
-                    u'[TryInsert] exception: {err}, '
-                    u'def {function}, try: {try_count}'
-                    u''.format(
-                        err=u'OperationalError',
-                        function=wrapper.__name__,
-                        try_count=try_count
-                    )
+                    f'[TryInsert] exception: OperationalError, '
+                    f'def {{wrapper.__name__}}, try: {{try_count}}'
                 )
                 Session.rollback()
                 continue
@@ -163,12 +117,9 @@ def TryGetGA(fnc):
             try_count -= 1
 
             result = fnc(*args, **kwargs)
-            if result == []:
+            if result is list:
                 log.error(
-                    u"[TryGetGA] not found analytics/logs, try: {try_count}"
-                    u"".format(
-                        try_count=try_count
-                    )
+                    f"[TryGetGA] not found analytics/logs, try: {{try_count}}"
                 )
                 time.sleep(1)
                 continue
