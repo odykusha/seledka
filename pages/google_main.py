@@ -1,5 +1,5 @@
 
-from ..elements.base import Page, Block, Element
+from ..elements import Page, Block, Element
 
 
 class ResultBlocks(Block):

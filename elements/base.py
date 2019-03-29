@@ -2,6 +2,7 @@
 import time
 import logging
 import collections
+import allure
 
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -13,6 +14,7 @@ from selenium.common.exceptions import (
     UnexpectedAlertPresentException,
 )
 
+from ..libs.screenshot import ScreenShots
 
 log = logging.getLogger(__name__)
 
@@ -88,6 +90,17 @@ def scroll_if_invisible(driver, element):
     if element_coordinate['bottom'] < 0:
         scroll_to_element(driver, element, with_offset=-60)
         log.info(f'[SCROLL] coordinate: {element_coordinate}')
+
+
+def _get_link_element(driver, text_link, index):
+    """ Поиск ссылок """
+    return find_elements(
+        driver,
+        By.XPATH,
+        f"//a[contains(text(), '{text_link}')] | "
+        f"//a//*[contains(text(), '{text_link}')]//.. | "
+        f"//a[@title='{text_link}']"
+    )[index]
 
 
 # --------------------------------------------------------------------------- #
@@ -232,8 +245,22 @@ class Base(Bindable):
         ActionChains(self.driver).move_to_element(self.lookup()).perform()
         return self
 
-    #                           find single elements
-    # _______________________________________________________________________ #
+    def take_part_screenshot(self):
+        u""" Создать скриншот(частичный) элемента """
+        screen_shot = ScreenShots(self.driver)
+        screen_shot.take_part_screenshot(self.lookup())
+
+        allure.attach(
+            screen_shot.content,
+            name=f'[скриншот] {{self.by}}={{self.locator}}',
+            attachment_type=allure.attachment_type.PNG
+        )
+        log.warning(
+            f'[скриншот] {screen_shot.url} {{self.by}}={{self.locator}}'
+        )
+
+    #                      find single elements (single)
+    # ----------------------------------------------------------------------- #
     @classmethod
     def find_by_id(cls, value):
         return cls(By.ID, value)
@@ -266,8 +293,8 @@ class Base(Bindable):
     def find_by_css_selector(cls, value):
         return cls(By.CSS_SELECTOR, value)
 
-    #                           find all elements
-    # _______________________________________________________________________ #
+    #                     find all elements (Sequence)
+    # ----------------------------------------------------------------------- #
     @classmethod
     def find_all_by_id(cls, value):
         return cls.as_list(By.ID, value)
@@ -315,6 +342,7 @@ class Page(object):
     def lookup(self):
         pass
 
+    @allure.step("Переключение на вкладку {1}")
     def switch_to_window(self, window_index=0, timeout=10):
         """ Ожидаем окно и переключаемся в него """
         # wait
@@ -330,6 +358,48 @@ class Page(object):
             self.driver.window_handles[window_index]
         )
 
+    def get_link(self, text_link, index=0):
+        """ Поиск ссылки по названию либо по атрибуту 'title' """
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((
+                By.XPATH,
+                f"//a[contains(text(), '{text_link}')] | "
+                f"//a//*[contains(text(), '{text_link}')]//.. | "
+                f"//a[@title='{text_link}']"
+            ))
+        )
+
+        scroll_to_element(
+            self.driver,
+            _get_link_element(self.driver, text_link, index),
+            with_offset=-55
+        )
+        link = _get_link_element(self.driver, text_link, index)
+        ActionChains(self.driver).move_to_element_with_offset(
+            link, 1, 1).perform()
+        return link
+
+    def take_screenshot(self):
+        """ Создать скриншот страницы """
+        screen_shot = ScreenShots(self.driver)
+        screen_shot.take_screenshot()
+
+        allure.attach(
+            screen_shot.content,
+            name=f'[скриншот] {self.driver.current_url}',
+            attachment_type=allure.attachment_type.PNG
+        )
+        log.info(f'[скриншот] {screen_shot.url}')
+
+    def accept_alert_popup(self):
+        """Ожидание и закрытие всплывающего окна предупреждения
+        js: alert()"""
+        WebDriverWait(self.driver, 10).until(
+            EC.alert_is_present(),
+            "Не отображен алерт в течении 10сек"
+        )
+        self.driver.switch_to_alert().accept()
+
 
 # --------------------------------------------------------------------------- #
 #                                   Block
@@ -343,35 +413,19 @@ class Block(Base):
 # --------------------------------------------------------------------------- #
 class Element(Base):
 
-    # def click(self, with_wait=True):
-    #     """ Нажатие на элемент """
-    #     if with_wait:
-    #         self.wait_to_enabled()
-    #     self.lookup().click(self)
-    #     # wait_for_page_loaded(self.driver)
-    #     return self
+    def click(self, with_wait=True):
+        """ Нажатие на элемент """
+        if with_wait:
+            self.wait_to_enabled()
+        self.lookup().click()
+        wait_for_page_loaded(self.driver)
+        return self
 
     def clear(self):
         """ Ощищение текста в инпуте """
         self.click()
-        # from first symbol
-        ActionChains(self.driver).\
-            key_down(Keys.END). \
-            perform()
-        # mark to last symbol
-        ActionChains(self.driver).\
-            key_down(Keys.CONTROL).\
-            key_down(Keys.SHIFT).\
-            key_down(Keys.HOME).\
-            key_up(Keys.CONTROL).\
-            key_up(Keys.SHIFT).\
-            perform()
-        # send BACKSPACE
-        ActionChains(self.driver).\
-            key_down(Keys.BACKSPACE).\
-            perform()
-        # self.send_keys(Keys.CONTROL + 'a')
-        # self.send_keys(Keys.BACKSPACE)
+        self.lookup().send_keys(Keys.CONTROL + 'a')
+        self.lookup().send_keys(Keys.BACKSPACE)
         return self
 
     def is_selected(self):
@@ -432,7 +486,7 @@ class Element(Base):
                 key_down(Keys.BACKSPACE). \
                 perform()
 
-    def send_keyword(self, key='ENTER'):
+    def press_key(self, key='ENTER'):
         """ передача эмуляции нажатия клавиш selenium.Keys() """
         keyword = getattr(Keys, key)
         if key != 'ESCAPE':
@@ -478,6 +532,7 @@ class Element(Base):
         )
         return self
 
+    @allure.step('Переключение в фрейм')
     def switch_to_frame(self, timeout=5):
         """ Ожидаем фрейм и переключаемся в него """
         WebDriverWait(self.driver, timeout).until(

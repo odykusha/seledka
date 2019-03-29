@@ -1,10 +1,10 @@
 
-from ..core import TestsCore
+from ..core import WebTestCase
 
 from ..pages.google_main import GooglePage
 
 
-class PythonOrgSearch(TestsCore):
+class PythonOrgSearch(WebTestCase):
 
     def test_search_webdriver_failed(self):
         google_page = GooglePage(self.driver)
@@ -13,7 +13,7 @@ class PythonOrgSearch(TestsCore):
             "Python",
             self.driver.title
         )
-        google_page.search_input.send_keys("webdriver").send_keyword()
+        google_page.search_input.send_keys("webdriver").press_key()
         self.soft_assert_equal(
             len(google_page.result_lists),
             12,
@@ -24,7 +24,7 @@ class PythonOrgSearch(TestsCore):
     def test_search_webdriver_passed(self):
         google_page = GooglePage(self.driver)
         google_page.open()
-        google_page.search_input.send_keys("webdriver").send_keyword()
+        google_page.search_input.send_keys("webdriver").press_key()
         google_page.result_lists.wait_to_display()
         self.soft_assert_equal(
             "webdriver - Поиск в Google",

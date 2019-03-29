@@ -12,7 +12,7 @@ from .exceptions import SoftAssert
 log = logging.getLogger(__name__)
 
 
-class TestsCore(unittest.TestCase, SoftAssert):
+class WebTestCase(unittest.TestCase, SoftAssert):
 
     def setUp(self):
 
