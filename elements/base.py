@@ -337,7 +337,8 @@ class Page(object):
         self.driver = driver
 
     def open(self):
-        self.driver.get(self.url)
+        with allure.step(f'open: {self.url}'):
+            self.driver.get(self.url)
 
     def lookup(self):
         pass

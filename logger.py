@@ -1,11 +1,77 @@
 
 import py
 import logging
+from datetime import datetime
 
 import allure
 
 
 log = logging.getLogger(__name__)
+
+
+# --------------------------------------------------------------------------- #
+#                  Check errors from browser (in console)
+# --------------------------------------------------------------------------- #
+# шаблоны сообщений, которых игнорировать в консоле браузера
+SKIPPED_ERRORS = [
+    "see https://fb.me",
+    "This content should also be served over HTTPS.",
+]
+
+
+def major_errors(console_error):
+    u""" проверка что логи не помемечены, как скипнутые, см. SKIPPED_ERRORS """
+    for template_err in SKIPPED_ERRORS:
+        if template_err in console_error:
+            return False
+    return True
+
+
+def check_console_error(driver):
+    u""" Поиск всех ошибок которые были найдены в консоли """
+    # found browser logs
+    browser_log_list = []
+    uniq_message = []
+    for lg in driver.get_log('browser'):
+        if lg['message'] not in uniq_message and major_errors(lg['message']):
+            uniq_message.append(lg['message'])
+            found_log = "{time} {level}[{source}]\t{message}".format(
+                time=datetime.fromtimestamp(
+                    lg['timestamp'] / 1000).strftime('%H:%M:%S'),
+                level=lg.get('level'),
+                source=lg.get('source'),
+                message=lg.get('message')
+            )
+            browser_log_list.append(found_log)
+            log.warning(found_log)
+    if browser_log_list:
+        allure.attach(
+            '\n'.join(browser_log_list),
+            name='log[browser]',
+            attachment_type=allure.attachment_type.JSON
+        )
+
+    # found driver logs
+    driver_log_list = []
+    uniq_message = []
+    for lg in driver.get_log('driver'):
+        if lg['message'] not in uniq_message:
+            uniq_message.append(lg['message'])
+            found_log = "{time} {level}[{source}]\t{message}".format(
+                time=datetime.fromtimestamp(
+                    lg['timestamp'] / 1000).strftime('%H:%M:%S'),
+                level=lg.get('level'),
+                source=lg.get('source'),
+                message=lg.get('message')
+            )
+            driver_log_list.append(found_log)
+            log.warning(found_log)
+    if driver_log_list:
+        allure.attach(
+            '\n'.join(driver_log_list),
+            name='log[driver]',
+            attachment_type=allure.attachment_type.JSON
+        )
 
 
 # --------------------------------------------------------------------------- #

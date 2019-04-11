@@ -2,7 +2,7 @@
 import os
 import datetime
 import requests
-# from PIL import Image
+from PIL import Image
 from io import BytesIO
 
 from .decorators import TryRequests
@@ -140,15 +140,15 @@ class ScreenShots(object):
         script = "return arguments[0].getBoundingClientRect();"
         element_coordinate = self._driver.execute_script(script, element)
 
-        # im = Image.open(BytesIO(png))
-        # im = im.crop((
-        #     int(element_coordinate['left'] - 2),
-        #     int(element_coordinate['top'] - 2),
-        #     int(element_coordinate['right'] + 3),
-        #     int(element_coordinate['bottom'] + 2)
-        # ))
-        # im.save(self._img_path)
-        # im.close()
+        im = Image.open(BytesIO(png))
+        im = im.crop((
+            int(element_coordinate['left'] - 2),
+            int(element_coordinate['top'] - 2),
+            int(element_coordinate['right'] + 3),
+            int(element_coordinate['bottom'] + 2)
+        ))
+        im.save(self._img_path)
+        im.close()
         self.__upload_img()
         return self
 
