@@ -1,5 +1,5 @@
 
-from .base import Element
+from ..elements.base import Element
 
 
 class Checkbox(Element):

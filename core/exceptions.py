@@ -35,6 +35,15 @@ class BaseSoftAssert(object):
             )
             self.add_failed_info(message, error)
 
+    def soft_assert_not_equal(self, current, excepted, message=None):
+        if current == excepted:
+            error = (
+                f"*-------- Soft Assertion (Совпадают значения) --------*\n"
+                f"\tТекущее: '{current}'\n"
+                f"\tОжидаемое: '{excepted}'\n"
+            )
+            self.add_failed_info(message, error)
+
     def soft_assert_in(self, member, container, message=None):
         """ Проверка что member находится в container(Частичное вхождение) """
         if member not in container:
