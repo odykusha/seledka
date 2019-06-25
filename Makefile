@@ -1,19 +1,19 @@
 REGISTRY = registry.dev
 HASH_SUM = `./docker/check_enviroment_changes.sh`
-SE_ENV_CONTAINER = $(REGISTRY)/sele:$(HASH_SUM)
+SE_ENV_CONTAINER = $(REGISTRY)/seledka:$(HASH_SUM)
 
 
 # !!!!! parsing arguments !!!!!!!
-ifeq (se-pull,$(firstword $(MAKECMDGOALS)))
+ifeq (pull,$(firstword $(MAKECMDGOALS)))
   SEPULL_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 endif
 
-ifeq (se-test,$(firstword $(MAKECMDGOALS)))
+ifeq (test,$(firstword $(MAKECMDGOALS)))
   SETEST_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 endif
 
 
-se-build:
+build:
 	@echo "==================================================================="
 	@echo ">>>> [BUILD docker images]"
 	@if [ -z "$$(docker images -q $(SE_ENV_CONTAINER))" ]; then \
@@ -24,9 +24,9 @@ se-build:
 	@echo ">>>> Done."
 
 
-se-pull:
-	@# [example]: make se-pull sele
-	@# [example]: make se-pull sele:d6eb12c2
+pull:
+	@# [example]: make pull seledka
+	@# [example]: make pull seledka:d6eb12c2
 	@echo "==================================================================="
 	@echo ">>>> [PULL docker images]"
 	@docker login $(REGISTRY)
@@ -41,12 +41,12 @@ se-pull:
 			echo ">>>> Done."; \
 		else \
 			echo "==================================================================="; \
-			echo ">>>> [Not found container $(SE_ENV_CONTAINER)], use command 'make se-build'"; \
+			echo ">>>> [Not found container $(SE_ENV_CONTAINER)], use command 'make build'"; \
 		fi; \
 	fi;
 
 
-se-push:
+push:
 	@echo "==================================================================="
 	@echo ">>>> [PUSH docker images]"
 	@docker login $(REGISTRY)
@@ -55,29 +55,34 @@ se-push:
 	@echo ">>>> Done."
 
 
-se-test:
-	@# [example]: make se-test -- tests/ (...)
+test:
+	@# [example]: make test -- tests/ (...)
 	@echo "==================================================================="
 	@echo ">>>> [RUN tests in docker]"
 	@xhost +SI:localuser:root
 	@echo "" > .pytest_cache/v/cache/lastfailed &2>/dev/null
 	@#@if [ -z "$$(docker images -q $(SE_ENV_CONTAINER))" ]; then \
 		#echo ">>>> Don't found local container '$(SE_ENV_CONTAINER)', try upload from registry..."; \
-		#$(MAKE) -s se-pull; \
+		#$(MAKE) -s pull; \
 	#fi;
 	@if [ -z "$$(docker images -q $(SE_ENV_CONTAINER))" ]; then \
 		echo ">>>> Don't found in registry container '$(SE_ENV_CONTAINER)', build new container..."; \
-		$(MAKE) -s se-build; \
+		$(MAKE) -s build; \
 	fi;
-	@$(MAKE) -s se-remove-old-images
-	@docker run --net=host -v "$(PWD)":/work -it $(SE_ENV_CONTAINER) $(SETEST_ARGS)
+	@$(MAKE) -s remove-old-images
+	@docker run --net=host -v "$(PWD)":/work -it $(SE_ENV_CONTAINER) pytest $(SETEST_ARGS)
 
 
-se-version:
+version:
 	@# actual container version
 	@echo $(SE_ENV_CONTAINER)
 
 
-se-remove-old-images:
+remove-old-images:
 	@# save last 5 images, and remove all another
-	@python docker/remove_old_images.py $(REGISTRY)/sele
+	@python docker/remove_old_images.py $(REGISTRY)/seledka
+
+
+flake8:
+	@# check all file in project
+	@flake8

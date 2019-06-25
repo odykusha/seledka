@@ -3,7 +3,7 @@ import os
 import sys
 
 
-SAVE_LAST_CONTAINER = 3
+SAVE_LAST_CONTAINER = 2
 
 
 try:

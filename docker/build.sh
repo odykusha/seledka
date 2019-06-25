@@ -7,11 +7,11 @@ SE_ENV_CONTAINER=registry.dev/seledka:${HASH_SUM}
 build_dir=$(mktemp -d)
 
 cp -v docker/Dockerfile $build_dir
-cp -v docker/entrypoint.sh $build_dir
 cp -v docker/selenium.txt $build_dir
 cp -v requirements.txt $build_dir
 
 cd $build_dir
+
 
 docker build -f ./Dockerfile -t $SE_ENV_CONTAINER .
 

@@ -94,7 +94,6 @@ ENV DISPLAY=:0
 VOLUME $HOME/.Xauthority && /tmp/.X11-unix
 
 WORKDIR /work
-ENTRYPOINT ["/work/docker/entrypoint.sh"]
 
 
 RUN echo =============== installed browser ================ \

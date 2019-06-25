@@ -3,4 +3,6 @@ exclude =
     .cache,
     .pytest_cache,
     env,
+    core/libs/screenshot.py,
+    core/elements/base.py,
 max-complexity = 10

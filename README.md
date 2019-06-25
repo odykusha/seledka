@@ -2,19 +2,21 @@
 
 
 ## Запуск тестов
-> `make se-test -- -- core/tests/test_goole_passed <options>` - запуск тестов в докер контейнере
+> `make test -- core/tests/test_goole_passed <options>` - запуск тестов в докер контейнере
 
 
 ### Другие команды докера
-> `make se-build` - сбилдить контейнер
+> `make build` - сбилдить контейнер
 
-> `make se-push` - запушать актуальный контейнер
+> `make push` - запушать актуальный контейнер
 
-> `make se-pull` - спулить актуальный контейнер
+> `make pull` - спулить актуальный контейнер
 
-> `make se-version` - текущий хеш конейнера
+> `make version` - текущий хеш конейнера
 
-> `make se-remove-old-images` - удалить старые контейнеры(кроме последних 3х)
+> `make remove-old-images` - удалить старые контейнеры(кроме последних 3х)
+
+> `make flake8` - проверить весь проект на flake8
 
 
 # SELEDKA (env)
