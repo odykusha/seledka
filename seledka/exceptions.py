@@ -1,7 +1,7 @@
 
 import allure
 
-# from .libs.screenshot import ScreenShots
+# from seledka.libs.screenshot import ScreenShots
 
 
 class BaseSoftAssert(object):

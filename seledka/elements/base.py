@@ -14,7 +14,7 @@ from selenium.common.exceptions import (
     UnexpectedAlertPresentException,
 )
 
-from ..libs.screenshot import ScreenShots
+from seledka.libs.screenshot import ScreenShots
 
 log = logging.getLogger(__name__)
 

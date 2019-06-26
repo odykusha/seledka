@@ -2,7 +2,7 @@
 
 
 ## Запуск тестов
-> `make test -- core/tests/test_goole_passed <options>` - запуск тестов в докер контейнере
+> `make test -- seledka/tests/test_goole_passed <options>` - запуск тестов в докер контейнере
 
 
 ### Другие команды докера
@@ -12,9 +12,9 @@
 
 > `make pull` - спулить актуальный контейнер
 
-> `make version` - текущий хеш конейнера
+> `make version` - текущий хеш контейнера
 
-> `make remove-old-images` - удалить старые контейнеры(кроме последних 3х)
+> `make remove-old-images` - удалить старые контейнеры(кроме последних 2х)
 
 > `make flake8` - проверить весь проект на flake8
 
@@ -34,9 +34,9 @@ python3.7 -m venv env
 
 > `pytest -n2` - в `2`потока
 
-> `pytest core/tests/test_goole_passed` - только всех что в файле
+> `pytest seledka/tests/test_goole_passed` - только всех что в файле
 
-> `pytest core/tests/test_goole_passed -k test_search_webdriver_passed` - только определенного 
+> `pytest seledka/tests/test_goole_passed -k test_search_webdriver_passed` - только определенного 
 
 
 ##

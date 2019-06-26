@@ -7,13 +7,13 @@ import logging
 import json
 import requests
 
+import allure
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-import allure
 
-from .libs.decorators import TryRequests
-from .exceptions import RequestSoftAssert, WebSoftAssert
-from .logger import check_console_error
+from seledka.libs.retries import TryRequests
+from seledka.exceptions import RequestSoftAssert, WebSoftAssert
+from seledka.logger import check_console_error
 
 
 log = logging.getLogger(__name__)

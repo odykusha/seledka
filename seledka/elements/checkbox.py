@@ -1,5 +1,5 @@
 
-from ..elements.base import Element
+from seledka.elements.base import Element
 
 
 class Checkbox(Element):

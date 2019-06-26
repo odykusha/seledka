@@ -60,7 +60,6 @@ test:
 	@echo "==================================================================="
 	@echo ">>>> [RUN tests in docker]"
 	@xhost +SI:localuser:root
-	@echo "" > .pytest_cache/v/cache/lastfailed &2>/dev/null
 	@#@if [ -z "$$(docker images -q $(SE_ENV_CONTAINER))" ]; then \
 		#echo ">>>> Don't found local container '$(SE_ENV_CONTAINER)', try upload from registry..."; \
 		#$(MAKE) -s pull; \
@@ -69,7 +68,7 @@ test:
 		echo ">>>> Don't found in registry container '$(SE_ENV_CONTAINER)', build new container..."; \
 		$(MAKE) -s build; \
 	fi;
-	@$(MAKE) -s remove-old-images
+	@#$(MAKE) -s clean
 	@docker run --net=host -v "$(PWD)":/work -it $(SE_ENV_CONTAINER) pytest $(SETEST_ARGS)
 
 
@@ -78,8 +77,10 @@ version:
 	@echo $(SE_ENV_CONTAINER)
 
 
-remove-old-images:
-	@# save last 5 images, and remove all another
+clean:
+	@# save last 2 images, and remove all another
+	@echo "" > .pytest_cache/v/cache/lastfailed &2>/dev/null
+	@find -name '*.pyc' -delete
 	@python docker/remove_old_images.py $(REGISTRY)/seledka
 
 

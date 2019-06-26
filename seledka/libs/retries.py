@@ -2,9 +2,9 @@
 import time
 import logging
 
+from sqlsoup import Session
 import allure
 from requests.exceptions import ReadTimeout, ConnectionError
-from sqlsoup import Session
 from sqlalchemy.exc import (
     OperationalError, IntegrityError, InvalidRequestError
 )

@@ -5,7 +5,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 
-from ..libs.decorators import TryRequests
+from seledka.libs.retries import TryRequests
 
 
 SCREEENSHOT_HOST = 'https://screenshots.dev/'
@@ -64,7 +64,7 @@ class ScreenShots(object):
 
     def __remove_screen_border(self):
         u""" Удаление границы видимости экрана в момент прогона теста """
-        from ..testcase.base import enable_jquery
+        from seledka.elements.base import enable_jquery
         enable_jquery(self._driver)
         script = """
             var div = jQuery('#border_for_screenshot')[0];

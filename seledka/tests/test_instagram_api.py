@@ -1,5 +1,5 @@
 
-from ..testcase import RequestTestCase
+from seledka.testcase import RequestTestCase
 
 
 class InstagramAPI(RequestTestCase):
@@ -12,11 +12,6 @@ class InstagramAPI(RequestTestCase):
             url='https://api.instagram.com/v1/tags/iphone',
             status_code=400
         ).json()
-
-        self.soft_assert_equal(
-            self.response.status_code,
-            400
-        )
 
         self.soft_assert_equal(
             response['meta']['error_message'],

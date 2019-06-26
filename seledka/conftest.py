@@ -1,7 +1,7 @@
 
 import logging
 
-from .logger import Logger
+from seledka.logger import Logger
 
 
 log = logging.getLogger(__name__)

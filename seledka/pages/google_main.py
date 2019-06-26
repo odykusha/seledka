@@ -1,5 +1,5 @@
 
-from ..elements import Page, Block, Element
+from seledka.elements import Page, Block, Element
 
 
 class ResultBlocks(Block):

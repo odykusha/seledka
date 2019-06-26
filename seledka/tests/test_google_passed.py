@@ -1,7 +1,7 @@
 
-from ..testcase import WebTestCase
+from seledka.testcase import WebTestCase
 
-from ..pages.google_main import GooglePage
+from seledka.pages.google_main import GooglePage
 
 
 class PythonOrgSearch(WebTestCase):
