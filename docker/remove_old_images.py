@@ -9,7 +9,7 @@ SAVE_LAST_CONTAINER = 2
 try:
     sys.argv[1]
 except IndexError:
-    print('not found arguments: registry.dev/seledka')
+    print('not found arguments: odykusha/seledka')
     exit(1)
 
 

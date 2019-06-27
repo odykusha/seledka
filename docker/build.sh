@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 HASH_SUM=`./docker/check_enviroment_changes.sh`
-SE_ENV_CONTAINER=registry.dev/seledka:${HASH_SUM}
+SE_ENV_CONTAINER=odykusha/seledka:${HASH_SUM}
 
 
 build_dir=$(mktemp -d)
