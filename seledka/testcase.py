@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 
 class WebTestCase(unittest.TestCase, WebSoftAssert):
 
-    def setUp(self):
+    def setup_method(self, method):
         self.assert_errors = '\n'
 
         if platform.system() == 'Win32':
@@ -38,8 +38,12 @@ class WebTestCase(unittest.TestCase, WebSoftAssert):
             options.add_argument("--disable-notifications")
             options.add_argument("--disable-gpu")
             options.add_experimental_option('w3c', False)
-            # chromedriver = "/usr/bin/chromedriver"
-            # os.environ["webdriver.chrome.driver"] = chromedriver
+            if hasattr(method, 'portable'):
+                options.add_experimental_option(
+                    "mobileEmulation",
+                    {'deviceName': 'Nexus 5'}
+                )
+
             self.driver = webdriver.Chrome(chrome_options=options)
 
         if platform.system() == 'Darwin':
@@ -47,7 +51,7 @@ class WebTestCase(unittest.TestCase, WebSoftAssert):
 
         self.driver.maximize_window()
 
-    def tearDown(self):
+    def teardown_method(self, method):
         # from datetime import datetime
         # screen_path = os.path.dirname(__file__) + '\\screenshots\\%s.png' % \
         #               datetime.now().strftime("%Y-%m-%d_%H%M%S")

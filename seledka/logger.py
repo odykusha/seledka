@@ -77,6 +77,12 @@ def check_console_error(driver):
 # --------------------------------------------------------------------------- #
 #                              Logger Configure
 # --------------------------------------------------------------------------- #
+class LoggerFilter(logging.Filter):
+
+    def filter(self, record):
+        return record.levelno > 10
+
+
 class Logger(object):
 
     def pytest_runtest_setup(self, item):
@@ -87,6 +93,7 @@ class Logger(object):
             "%H:%M:%S"
         ))
         root_logger = logging.getLogger()
+        item.capturelog_handler.addFilter(LoggerFilter())
         root_logger.addHandler(item.capturelog_handler)
         root_logger.setLevel(logging.NOTSET)
 
