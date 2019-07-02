@@ -1,7 +1,6 @@
 
 import os
 import time
-import platform
 import unittest
 import logging
 import json
@@ -10,6 +9,8 @@ import requests
 import allure
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.opera.options import Options as OperaOptions
 
 from seledka.libs.retries import TryRequests
 from seledka.exceptions import RequestSoftAssert, WebSoftAssert
@@ -24,12 +25,45 @@ class WebTestCase(unittest.TestCase, WebSoftAssert):
     def setup_method(self, method):
         self.assert_errors = '\n'
 
-        if platform.system() == 'Win32':
-            chromedriver = "E:\\instal\\Programming\\chromedriver.exe"
-            os.environ["webdriver.chrome.driver"] = chromedriver
-            self.driver = webdriver.Chrome(chromedriver)
+        browser_name = os.environ.get('BROWSER')
+        if browser_name == 'firefox':
+            profile = webdriver.FirefoxProfile()
+            profile.set_preference("devtools.console.stdout.content", True)
+            # if hasattr(method, 'portable'):
+            #     profile.set_preference(
+            #         "general.useragent.override",
+            #         "Mozilla/5.0 (Linux; Android 8.0;"
+            #         "Pixel 2 Build/OPD3.170816.012) "
+            #         "AppleWebKit/537.36 (KHTML, like Gecko)"
+            #         "Chrome/70.0.3538.77 Mobile Safari/537.36"
+            #     )
+            #     profile.update_preferences()
+            firefox_options = FirefoxOptions()
+            firefox_options.add_argument("-no-remote")
+            firefox_options.log.level = 'trace'
+            self.driver = webdriver.Firefox(
+                firefox_profile=profile,
+                options=firefox_options
+            )
 
-        if platform.system() == 'Linux':
+        elif browser_name == 'opera':
+            opera_options = OperaOptions()
+            opera_options.add_argument("--verbose")
+            opera_options.add_argument("--enable-logging --v=1")
+            opera_options.add_argument("--no-sandbox")
+            opera_options.add_argument("--ignore-certificate-errors")
+            opera_options.add_argument("--disable-notifications")
+            opera_options.add_argument("--disable-gpu")
+            opera_options.add_experimental_option('w3c', False)
+            # if hasattr(method, 'portable'):
+            #     opera_options.add_experimental_option(
+            #         "mobileEmulation",
+            #         {'deviceName': 'Nexus 5'}
+            #     )
+            opera_options.binary_location = '/usr/bin/opera'
+            self.driver = webdriver.Opera(options=opera_options)
+
+        else:
             options = ChromeOptions()
             options.add_argument("--verbose")
             options.add_argument("--enable-logging --v=1")
@@ -43,11 +77,7 @@ class WebTestCase(unittest.TestCase, WebSoftAssert):
                     "mobileEmulation",
                     {'deviceName': 'Nexus 5'}
                 )
-
             self.driver = webdriver.Chrome(chrome_options=options)
-
-        if platform.system() == 'Darwin':
-            self.driver = webdriver.Chrome()
 
         self.driver.maximize_window()
 
@@ -58,7 +88,8 @@ class WebTestCase(unittest.TestCase, WebSoftAssert):
         # self.driver.save_screenshot(screen_path)
         # print('Test URL: %s' % self.driver.current_url)
         # print('ScreenShot URL: %s' % screen_path)
-        check_console_error(self.driver)
+        if os.environ.get('BROWSER') not in ['firefox', 'opera']:
+            check_console_error(self.driver)
         if self.driver:
             self.driver.close()
         self.check_assert_errors()

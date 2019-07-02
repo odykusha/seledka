@@ -2,21 +2,21 @@
 
 
 ## Запуск тестов
-> `make test -- seledka/tests/test_goole_passed <options>` - запуск тестов в докер контейнере
+> `./run test seledka/tests/test_goole_passed <options>` - запуск тестов в докер контейнере
 
 
 ### Другие команды докера
-> `make build` - сбилдить контейнер
+> `./run build` - сбилдить контейнер
 
-> `make push` - запушать актуальный контейнер
+> `./run push` - запушать актуальный контейнер
 
-> `make pull` - спулить актуальный контейнер
+> `./run pull` - спулить актуальный контейнер
 
-> `make version` - текущий хеш контейнера
+> `./run version` - текущий хеш контейнера
 
-> `make clean` - удалить старые контейнеры(кроме последних 2х)
+> `./run clean` - удалить старые контейнеры(кроме последних 2х)
 
-> `make flake8` - проверить весь проект на flake8
+> `./run flake8` - проверить весь проект на flake8
 
 
 # SELEDKA (env)
@@ -46,5 +46,3 @@ python3.7 -m venv env
 * [faker](https://faker.readthedocs.io/en/latest/providers/faker.providers.address.html)
 * [selenoid](https://github.com/aerokube)
 * [requests](http://docs.python-requests.org/en/master/)
-
-

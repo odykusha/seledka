@@ -1,0 +1,66 @@
+#!/bin/bash
+
+HASH_SUM=`./docker/check_enviroment_changes.sh`
+SE_ENV_CONTAINER=odykusha/seledka:${HASH_SUM}
+
+# complete -W 'build pull push test version clean flake8' ./run
+
+
+case $1 in
+    build )
+                if [[ -z `docker images -q ${SE_ENV_CONTAINER}` ]]; then
+		            bash ./docker/build.sh;
+                else
+                    echo ">> Found local container '${SE_ENV_CONTAINER}'";
+                fi;
+                echo ">> build ...OK"
+                ;;
+
+    pull )
+                docker login
+                echo ">> Please wait, i'm pulling..."
+                if [[ "$(docker pull ${SE_ENV_CONTAINER} 2> /dev/null)" != "" ]]; then
+                    echo ">> Download ${SE_ENV_CONTAINER} ...OK";
+                else
+                    echo ">> Not found container ${SE_ENV_CONTAINER}, use command 'build'";
+                fi;
+                ;;
+
+    push )
+                docker login
+                docker push ${SE_ENV_CONTAINER}
+                echo ">> Pushed ${SE_ENV_CONTAINER} in: https://cloud.docker.com ...OK"
+                ;;
+
+    test )
+                xhost +SI:localuser:root
+                if [[ -z `docker images -q ${SE_ENV_CONTAINER}` ]]; then
+                    echo ">> Don't found local container '${SE_ENV_CONTAINER}', try upload from cloud ...WARNING";
+                    bash ./test pull;
+                fi;
+                if [[ -z `docker images -q ${SE_ENV_CONTAINER}` ]]; then
+                    echo ">> Don't found in registry container '${SE_ENV_CONTAINER}', build new container ...WARNING";
+                    bash ./test build;
+                fi;
+
+                shift ${OPTIND+1}
+                docker run --net=host -v "${PWD}":/work -it ${SE_ENV_CONTAINER} pytest $@
+                ;;
+
+    version )
+                echo ${SE_ENV_CONTAINER}
+                ;;
+
+    clean )
+                #echo "" > .pytest_cache/v/cache/lastfailed &2>/dev/null
+                sudo find -name '*.pyc' -delete
+                python docker/remove_old_images.py odykusha/seledka
+                echo '>> clean ...OK'
+                ;;
+
+    flake8 )
+                flake8
+                echo '>> flake8 ...OK'
+                ;;
+
+esac
