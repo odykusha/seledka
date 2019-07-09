@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 HASH_SUM=`./docker/check_enviroment_changes.sh`
 SE_ENV_CONTAINER=odykusha/seledka:${HASH_SUM}
@@ -8,38 +8,38 @@ SE_ENV_CONTAINER=odykusha/seledka:${HASH_SUM}
 
 case $1 in
     build )
-                if [[ -z `docker images -q ${SE_ENV_CONTAINER}` ]]; then
+                if [ -z `docker images -q ${SE_ENV_CONTAINER}` ]; then
 		            bash ./docker/build.sh;
                 else
-                    echo ">> Found local container '${SE_ENV_CONTAINER}'";
+                    echo "\033[1;34m>> Found local container '${SE_ENV_CONTAINER}'\033[0m";
                 fi;
-                echo ">> build ...OK"
+                echo "\033[1;34m>> build ...\e[92mOK\033[0m"
                 ;;
 
     pull )
                 docker login
-                echo ">> Please wait, i'm pulling..."
-                if [[ "$(docker pull ${SE_ENV_CONTAINER} 2> /dev/null)" != "" ]]; then
-                    echo ">> Download ${SE_ENV_CONTAINER} ...OK";
+                echo "\033[1;34m>> Please wait, i'm pulling...\033[0m"
+                if [ "$(docker pull ${SE_ENV_CONTAINER} 2> /dev/null)" != "" ]; then
+                    echo "\033[1;34m>> Download ${SE_ENV_CONTAINER} ...\e[92mOK\033[0m";
                 else
-                    echo ">> Not found container ${SE_ENV_CONTAINER}, use command 'build'";
+                    echo "\033[1;34m>> Not found container ${SE_ENV_CONTAINER}, use command 'build'\033[0m";
                 fi;
                 ;;
 
     push )
                 docker login
                 docker push ${SE_ENV_CONTAINER}
-                echo ">> Pushed ${SE_ENV_CONTAINER} in: https://cloud.docker.com ...OK"
+                echo "\033[1;34m>> Pushed ${SE_ENV_CONTAINER} in: https://cloud.docker.com ...\e[92mOK\033[0m"
                 ;;
 
     test )
                 xhost +SI:localuser:root
-                if [[ -z `docker images -q ${SE_ENV_CONTAINER}` ]]; then
-                    echo ">> Don't found local container '${SE_ENV_CONTAINER}', try upload from cloud ...WARNING";
+                if [ -z `docker images -q ${SE_ENV_CONTAINER}` ]; then
+                    echo "\033[1;34m>> Don't found local container '${SE_ENV_CONTAINER}', try upload from cloud ...\e[91mWARNING\033[0m";
                     bash ./test pull;
                 fi;
-                if [[ -z `docker images -q ${SE_ENV_CONTAINER}` ]]; then
-                    echo ">> Don't found in registry container '${SE_ENV_CONTAINER}', build new container ...WARNING";
+                if [ -z `docker images -q ${SE_ENV_CONTAINER}` ]; then
+                    echo "\033[1;34m>> Don't found in registry container '${SE_ENV_CONTAINER}', build new container ...\e[91mWARNING\033[0m";
                     bash ./test build;
                 fi;
 
@@ -55,12 +55,12 @@ case $1 in
                 #echo "" > .pytest_cache/v/cache/lastfailed &2>/dev/null
                 sudo find -name '*.pyc' -delete
                 python docker/remove_old_images.py odykusha/seledka
-                echo '>> clean ...OK'
+                echo '\033[1;34m>> clean ...\e[92mOK\033[0m'
                 ;;
 
     flake8 )
                 flake8
-                echo '>> flake8 ...OK'
+                echo '\033[1;34m>> flake8 ...\e[92mOK\033[0m'
                 ;;
 
 esac
