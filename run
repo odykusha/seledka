@@ -3,7 +3,7 @@
 HASH_SUM=`./docker/check_enviroment_changes.sh`
 SE_ENV_CONTAINER=odykusha/seledka:${HASH_SUM}
 
-# complete -W 'build pull push test version clean flake8' ./run
+# echo "complete -f -W 'build pull push test version clean flake8' ./run" >> ~/.bashrc
 
 
 case $1 in
