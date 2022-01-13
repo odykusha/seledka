@@ -45,4 +45,4 @@ pytest-instafail==0.3.0
 allure-pytest==2.5.1
 numpy==1.15.0
 requests==2.10.0
-Pillow==5.3.0
+Pillow==9.0.0
