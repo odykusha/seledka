@@ -6,15 +6,15 @@ class InstagramAPI(RequestTestCase):
 
     def test_check_tags(self):
         """ проверка эндпоинта {tags}
-        GET https://api.instagram.com/v1/tags/{tag-name}
+        GET https://gorest.co.in/public/v2/users
         """
         response = self.make_request(
-            url='https://api.instagram.com/v1/tags/iphone',
-            status_code=400
+            url='https://gorest.co.in/public/v2/users',
+            status_code=200
         ).json()
 
         self.soft_assert_equal(
-            response['meta']['error_message'],
-            'Missing client_id or access_token URL parameter.',
-            'Не правильное сообщение ответа'
+            type(response[0]['id']),
+            int,
+            'wrong type of id'
         )

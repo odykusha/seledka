@@ -106,7 +106,7 @@ def _get_link_element(driver, text_link, index):
 # --------------------------------------------------------------------------- #
 #                                  CORE
 # --------------------------------------------------------------------------- #
-class Sequence(collections.Sequence):
+class Sequence(collections.abc.Sequence):
 
     def __iter__(self):
         for i in range(len(self)):

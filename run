@@ -62,5 +62,7 @@ case $1 in
                 flake8
                 echo '\033[1;34m>> flake8 ...\e[92mOK\033[0m'
                 ;;
-
+    bash )
+                docker run --net=host -v "${PWD}":/work -it ${SE_ENV_CONTAINER} bash
+                ;;
 esac

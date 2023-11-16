@@ -1,5 +1,6 @@
 
 import py
+import pytest
 import logging
 from datetime import datetime
 
@@ -83,6 +84,18 @@ class LoggerFilter(logging.Filter):
         return record.levelno > 10
 
 
+class LoggerHandler(logging.StreamHandler):
+
+    def __init__(self):
+        logging.StreamHandler.__init__(self)
+        self.stream = py.io.TextIO()
+        self.records = []
+
+    def close(self):
+        logging.StreamHandler.close(self)
+        self.stream.close()
+
+
 class Logger(object):
 
     def pytest_runtest_setup(self, item):
@@ -95,12 +108,12 @@ class Logger(object):
         root_logger = logging.getLogger()
         item.capturelog_handler.addFilter(LoggerFilter())
         root_logger.addHandler(item.capturelog_handler)
-        root_logger.setLevel(logging.NOTSET)
+        root_logger.setLevel(logging.ERROR)
 
-    def pytest_runtest_makereport(self, __multicall__, item, call):  # noqa
-
-        report = __multicall__.execute()
-
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_makereport(self, item, call):  # noqa
+        outcome = yield
+        report = outcome.get_result()
         if hasattr(item, "capturelog_handler"):
             if call.when == 'teardown':
                 root_logger = logging.getLogger()
@@ -155,15 +168,3 @@ class Logger(object):
                 del item.capturelog_handler
 
         return report
-
-
-class LoggerHandler(logging.StreamHandler):
-
-    def __init__(self):
-        logging.StreamHandler.__init__(self)
-        self.stream = py.io.TextIO()
-        self.records = []
-
-    def close(self):
-        logging.StreamHandler.close(self)
-        self.stream.close()

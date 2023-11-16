@@ -1,18 +1,14 @@
 
 import logging
-import requests
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import urllib3
 
 from seledka.logger import Logger
-
-
-log = logging.getLogger(__name__)
 
 
 # --------------------------------------------------------------------------- #
 #                                ATTRIBUTES
 # --------------------------------------------------------------------------- #
 def pytest_configure(config):
-    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     logging.getLogger("requests").setLevel(logging.WARNING)
     config.pluginmanager.register(Logger(), "logger")
