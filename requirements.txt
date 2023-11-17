@@ -5,7 +5,7 @@ pyflakes==2.1.1
 # for autotests
 selenium==4.15.2
 bs4==0.0.1
-fake-factory==0.5.3
+faker==20.0.3
 pytest==7.4.3
 pytest-xdist==3.3.1
 pytest_rerunfailures==12.0
@@ -16,3 +16,4 @@ urllib3==1.26.18
 requests==2.31.0
 Pillow==10.1.0
 py==1.11.0
+browserstack-sdk==1.18.4

@@ -129,6 +129,30 @@ class Sequence(collections.abc.Sequence):
         c.locator = locator
         return c
 
+    def find_by_text(self, text, partial_text=True) -> 'Element':
+        found_elements_by_test = []
+        if partial_text:
+            operator = 'el.innerText.includes(text)'
+        else:
+            operator = 'el.innerText == text'
+        script = f"""
+            var el = arguments[0];
+            var text = arguments[1];
+            var element
+            var index;
+            if ({operator}) element = true;
+            return element
+        """
+        for element in self:
+            if self.driver.execute_script(script, element.lookup(), text):
+                found_elements_by_test.append(element)
+        if len(found_elements_by_test) == 0:
+            raise Exception(
+                f'Element with text "{text}" has not been found'
+            )
+        else:
+            return found_elements_by_test[0]
+
 
 class Bindable(object):
 
@@ -191,6 +215,9 @@ class Base(Bindable):
         self.lookup().click()
         wait_for_page_loaded(self.driver)
         # return self
+
+    def js_click(self):
+        self.driver.execute_script('arguments[0].click()', self.lookup())
 
     def is_present(self):
         """ Проверка что элемент находится в ДОМе """
@@ -339,6 +366,7 @@ class Page(object):
     def open(self):
         with allure.step(f'open: {self.url}'):
             self.driver.get(self.url)
+            wait_for_page_loaded(self.driver)
 
     def lookup(self):
         pass
@@ -460,6 +488,10 @@ class Element(Base):
             log.critical(f'EXCEPTION in send_keys: {e}')
         self.lookup().send_keys(*value)
         return self
+
+    def upload_img(self, *value):
+        """ send in not displayed locator """
+        self.lookup().send_keys(*value)
 
     def send_only_keys(self, *value):
         """ отправка только текста, без очистки """
