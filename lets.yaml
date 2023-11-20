@@ -1,0 +1,63 @@
+version: "0.0.29"
+shell: bash
+
+
+env:
+  DOCKER_BUILDKIT: "1"
+  COMPOSE_DOCKER_CLI_BUILD: "1"
+  DOCKER_IMAGE: "odykusha/seledka"
+
+eval_env:
+  DOCKER_ENV: echo "`./docker/check_enviroment_changes.sh`"
+
+
+commands:
+  run:
+    description: run tests
+    cmd: |
+      docker-compose run test $@
+
+  build:
+    cmd: |
+      if [ -z `docker images -q ${DOCKER_IMAGE}:${DOCKER_ENV}` ]; then
+          bash ./docker/build.sh;
+      else
+          echo -e "\033[34m>> Found local container '${DOCKER_IMAGE}:${DOCKER_ENV}'\033[0m";
+      fi;
+      echo -e "\033[1;34m>> build ...\e[92mOK\033[0m"
+
+  pull:
+    cmd: |
+      docker login
+      echo -e "\033[34m>> Please wait, i'm pulling...\033[0m"
+      if [ "$(docker pull ${DOCKER_IMAGE}:${DOCKER_ENV} 2> /dev/null)" != "" ]; then
+          echo -e "\033[34m>> Download ${DOCKER_IMAGE}:${DOCKER_ENV} ...\e[92mOK\033[0m";
+      else
+          echo -e "\033[34m>> Not found container ${DOCKER_IMAGE}:${DOCKER_ENV}, use command 'build'\033[0m";
+      fi;
+
+  push:
+    cmd: |
+      docker login
+      docker push ${DOCKER_IMAGE}:${DOCKER_ENV}
+      echo -e "\033[34m>> Pushed ${DOCKER_IMAGE}:${DOCKER_ENV} in: https://cloud.docker.com ...\e[92mOK\033[0m"
+
+  login:
+    cmd: |
+      docker login hub.docker.com
+
+
+  flake8:
+    cmd: |
+      docker run --net=host -v "${PWD}":/work -it "${DOCKER_IMAGE}:latest" flake8
+
+  bash:
+    cmd: |
+      docker run --net=host -v "${PWD}":/work -it "${DOCKER_IMAGE}:latest" bash
+
+  version:
+    cmd: |
+      echo =============== installed browser ================
+      docker run --net=host -v "${PWD}":/work -it "${DOCKER_IMAGE}:latest" google-chrome --version
+      docker run --net=host -v "${PWD}":/work -it "${DOCKER_IMAGE}:latest" chromedriver --version
+      echo ==================================================

@@ -2,7 +2,7 @@ FROM python:3.12.0-slim
 
 COPY . /opt/
 RUN apt-get update --no-install-recommends && apt-get install -y apt-utils software-properties-common --no-install-recommends \
-    && apt-get install -y `grep -v '#' /opt/selenium.txt | xargs` --no-install-recommends \
+    && apt-get install -y `grep -v '#' /opt/selenium_env.txt | xargs` --no-install-recommends \
     && apt-get autoremove -y && apt-get purge -y --auto-remove && rm -rf /var/lib/apt/lists/*
 
 RUN ln -sf /usr/share/zoneinfo/Europe/Kiev /etc/localtime && locale-gen en_US.UTF-8 ru_RU.UTF-8 ru_UA.UTF-8

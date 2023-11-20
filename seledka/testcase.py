@@ -44,12 +44,12 @@ class WebTestCase(unittest.TestCase, WebSoftAssert):
         self.driver.maximize_window()
 
     def teardown_method(self, method):
-        # from datetime import datetime
-        # screen_path = os.path.dirname(__file__) + '\\screenshots\\%s.png' % \
-        #               datetime.now().strftime("%Y-%m-%d_%H%M%S")
-        # self.driver.save_screenshot(screen_path)
-        # print('Test URL: %s' % self.driver.current_url)
-        # print('ScreenShot URL: %s' % screen_path)
+        from datetime import datetime
+        screen_path = '/tmp/screenshots_%s.png' % \
+                      datetime.now().strftime("%Y-%m-%d_%H%M%S")
+        self.driver.save_screenshot(screen_path)
+        print('Test URL: %s' % self.driver.current_url)
+        print('ScreenShot URL: %s' % screen_path)
         if os.environ.get('BROWSER') not in ['firefox', 'opera']:
             check_console_error(self.driver)
         if self.driver:
