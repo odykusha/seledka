@@ -17,6 +17,11 @@ commands:
     cmd: |
       docker-compose run test $@
 
+  bs:
+    description: run tests on browserstack
+    cmd: |
+      docker-compose run browser_stack $@
+
   build:
     cmd: |
       if [ -z `docker images -q ${DOCKER_IMAGE}:${DOCKER_ENV}` ]; then

@@ -7,11 +7,11 @@ selenium==4.15.2
 bs4==0.0.1
 faker==20.0.3
 pytest==7.4.3
-pytest-xdist==3.3.1
+pytest-xdist==3.4.0
 pytest_rerunfailures==12.0
-pytest-instafail==0.3.0
+pytest-instafail==0.5.0
 allure-pytest==2.13.2
-numpy==1.26.1
+numpy==1.26.2
 urllib3==1.26.18
 requests==2.31.0
 Pillow==10.1.0

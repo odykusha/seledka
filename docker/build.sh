@@ -14,6 +14,6 @@ cp -v docker/requirements.txt $build_dir
 cd $build_dir
 
 
-docker build -f ./Dockerfile -t $SE_ENV_CONTAINER -t $SE_LATEST_CONTAINER.
+docker build -f ./Dockerfile -t $SE_ENV_CONTAINER -t $SE_LATEST_CONTAINER .
 
 rm -r $build_dir

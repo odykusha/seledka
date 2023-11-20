@@ -16,3 +16,6 @@ services:
     <<: *base
     entrypoint: pytest -p no:warnings
 
+  browser_stack:
+    <<: *base
+    entrypoint: browserstack-sdk pytest -p no:warnings
