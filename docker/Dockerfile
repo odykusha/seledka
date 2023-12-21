@@ -1,5 +1,10 @@
 FROM python:3.12.0-slim
 
+RUN useradd runuser --shell /bin/bash --create-home \
+  && usermod -a -G sudo runuser \
+  && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
+  && echo 'runuser:secret' | chpasswd
+
 COPY . /opt/
 RUN apt-get update --no-install-recommends && apt-get install -y apt-utils software-properties-common --no-install-recommends \
     && apt-get install -y `grep -v '#' /opt/selenium_env.txt | xargs` --no-install-recommends \
@@ -32,7 +37,7 @@ ENV DISPLAY=:0
 VOLUME $HOME/.Xauthority && /tmp/.X11-unix
 
 WORKDIR /work
-
+USER runuser
 
 RUN echo =============== installed browser ================ \
   && echo $(google-chrome --version) \
